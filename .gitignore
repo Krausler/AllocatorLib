@@ -1,0 +1,12 @@
+bin
+bin-int
+.vs
+.git
+
+# Visual studio directories
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj

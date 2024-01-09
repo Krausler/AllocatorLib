@@ -1,6 +1,6 @@
-workspace "Project"
+workspace "AllocatorLib"
     architecture "x86_64"
-    startproject "Application"
+    startproject "Tester"
 
     configurations
     {
@@ -11,7 +11,7 @@ workspace "Project"
     
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "Core"
-include "Application"
+include "AllocatorLib"
+include "Tester"
 
 
