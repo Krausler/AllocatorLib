@@ -4,8 +4,7 @@
 #include <iostream>
 #include <functional>
 #include <string>
-
-#include "Allocator/Types/List.h"
+#include <vector>
 
 namespace All {
 	const uint32_t FREEDBLOCK_LIST_SIZE = 1024;
@@ -87,7 +86,7 @@ namespace All {
 		void* SimpleFreedBlockAllocation(const uint32_t& blockIndex, const size_t& size);
 	private:
 		char* m_Buffer;
-		List<FreedBlock> m_FreedBlocks;
+		std::vector<FreedBlock> m_FreedBlocks;
 
 		AllocationData m_AllocData;
 		AllocatorSpecification m_Spec;

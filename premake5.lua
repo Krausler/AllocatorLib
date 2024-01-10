@@ -1,5 +1,5 @@
 workspace "AllocatorLib"
-    architecture "x86_64"
+    architecture { "x86_64" }
     startproject "Tester"
 
     configurations

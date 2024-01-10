@@ -1,4 +1,3 @@
-#include "ListIterator.h"
 namespace All {
 	template<typename Type>
 	inline ListIterator<Type>::ListIterator(Pointer ptr)

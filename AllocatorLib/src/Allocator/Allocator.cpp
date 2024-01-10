@@ -7,7 +7,7 @@
 
 namespace All {
 	Allocator::Allocator(const AllocatorSpecification& spec)
-		: m_Buffer((char*)::operator new(spec.Size)), m_Spec(spec), m_AllocData({ spec.Size, spec.Size, 0, 0 }), m_FreedBlocks(this)
+		: m_Buffer((char*)::operator new(spec.Size)), m_Spec(spec), m_AllocData({ spec.Size, spec.Size, 0, 0 })
 	{
 		ALL_ASSERT(spec.ResizeIncrease > 0.0f, "ResizeIncrease must be bigger then 0!");
 		ALL_ASSERT(spec.Size > 0, "Size must be bigger then 0!");
@@ -48,7 +48,7 @@ namespace All {
 
 		if (offsetInBuffer < m_AllocData.Pointer)
 		{
-			m_FreedBlocks.Add({ ptr, size });
+			m_FreedBlocks.push_back({ ptr, size });
 		}
 		else
 		{
@@ -65,7 +65,7 @@ namespace All {
 		size_t newCapacity = m_AllocData.Capacity * m_Spec.ResizeIncrease;
 		char* newBuffer = new char[newCapacity];
 
-		std::memcpy(newBuffer, m_Buffer, m_AllocData.Capacity);
+		memcpy(newBuffer, m_Buffer, m_AllocData.Capacity);
 
 		delete[] m_Buffer;
 		m_Buffer = newBuffer;
@@ -77,16 +77,16 @@ namespace All {
 
 	void* Allocator::FreedBlockAllocation(const size_t& size)
 	{
-		if (m_FreedBlocks.GetSize() == 0)
+		if (m_FreedBlocks.size() == 0)
 			return nullptr;
 
-		for (uint32_t i = 0; i < m_FreedBlocks.GetSize(); i++)
+		for (uint32_t i = 0; i < m_FreedBlocks.size(); i++)
 		{
 			void* result = SimpleFreedBlockAllocation(i, size);
 			if (result)
 				return result;
 
-			if (m_FreedBlocks.GetSize() > 1)
+			if (m_FreedBlocks.size() > 1 && i >= 1)
 			{
 				FreedBlock& block = m_FreedBlocks[i];
 				FreedBlock& previousBlock = m_FreedBlocks[i - 1];
@@ -95,7 +95,7 @@ namespace All {
 					previousBlock.Pointer = previousBlock.Pointer;
 					previousBlock.Size = previousBlock.Size + block.Size;
 
-					m_FreedBlocks.Remove(i);
+					m_FreedBlocks.erase(m_FreedBlocks.begin() + i);
 
 					return SimpleFreedBlockAllocation(i - 1, size);
 				}
@@ -111,7 +111,7 @@ namespace All {
 		if (sizeDiffrence == 0)
 		{
 			void* p = block.Pointer;
-			m_FreedBlocks.Remove(blockIndex);
+			m_FreedBlocks.erase(m_FreedBlocks.begin() + blockIndex);
 			return p;
 		}
 		else if (sizeDiffrence > 0)

@@ -17,7 +17,12 @@ int main()
 	All::Logger::SetLoggingFunc(ALL_BIND_LOGGING_FUNC(AllocatorLogFunction));
 	All::Allocator allocator;
 
-	{
+	All::List<uint64_t> vectorInsertTimes(&allocator);
+	All::List<uint64_t> listInsertTimes(&allocator);
+	All::List<uint64_t> vectorLoopTimes(&allocator);
+	All::List<uint64_t> listLoopTimes(&allocator);
+
+	for (int i = 0; i < 20; i++) {
 		StopWatch watch("vector test insert");
 
 		std::vector<uint32_t> vec;
@@ -26,9 +31,12 @@ int main()
 		{
 			vec.push_back(i);
 		}
+
+		watch.Stop();
+		vectorInsertTimes.Add(watch.GetElapsedTimeNanoSeconds());
 	}
 
-	{
+	for (int i = 0; i < 20; i++) {
 		std::vector<uint32_t> vec;
 
 		for (int i = 0; i < 50000; i++)
@@ -38,19 +46,25 @@ int main()
 		StopWatch watch("vector test for loop");
 
 		for (uint32_t& i : vec)
-			i += 1;
+			i++;
+
+		watch.Stop();
+		vectorLoopTimes.Add(watch.GetElapsedTimeNanoSeconds());
 	}
 
-	{
+	for (int i = 0; i < 20; i++) {
 		StopWatch watch("List test insert");
 
 		All::List<uint32_t> list(&allocator);
 
 		for (int i = 0; i < 50000; i++)
 			list.Add(i);
+
+		watch.Stop();
+		listInsertTimes.Add(watch.GetElapsedTimeNanoSeconds());
 	}
 
-	{
+	for (int i = 0; i < 20; i++) {
 		All::List<uint32_t> list(&allocator);
 
 		for (int i = 0; i < 50000; i++)
@@ -58,6 +72,26 @@ int main()
 		StopWatch watch("List test for loop");
 
 		for (uint32_t& i : list)
-			i += 1;
+			i++;
+		watch.Stop();
+		listLoopTimes.Add(watch.GetElapsedTimeNanoSeconds());
 	}
+
+	uint64_t vectorResult = 0;
+	uint64_t listResult = 0;
+	uint64_t vectorLoopResult = 0;
+	uint64_t listLoopResult = 0;
+	for (int i = 0; i < 20; i++)
+	{
+		vectorResult += vectorInsertTimes[i];
+		listResult += listInsertTimes[i];
+
+		vectorLoopResult += vectorLoopTimes[i];
+		listLoopResult += listLoopTimes[i];
+	}
+
+	std::cout << "vector result: " << vectorResult / 20 << std::endl;
+	std::cout << "list result: " << listResult / 20 << std::endl;
+	std::cout << "vector loop result: " << vectorLoopResult / 20 << std::endl;
+	std::cout << "list loop result: " << listLoopResult / 20 << std::endl;
 }

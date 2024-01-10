@@ -1,5 +1,7 @@
 #include "Allocator/Core.h"
-#include "List.h"
+
+#include "Allocator/Allocator.h"
+
 namespace All {
 	template<typename Type>
 	inline List<Type>::List(Allocator* allocator, const size_t& capacity, const size_t& size, const float& increaseMultiplier)
@@ -85,7 +87,7 @@ namespace All {
 	inline void List<Type>::Remove(const uint64_t& index)
 	{
 		ALL_ASSERT(index < m_Size);
-		std::memcpy(m_Data + index, m_Data + index + 1, (--m_Size - index) * sizeof(Type));
+		memcpy(m_Data + index, m_Data + index + 1, (--m_Size - index) * sizeof(Type));
 	}
 
 	template<typename Type>
@@ -94,12 +96,12 @@ namespace All {
 		Type* newData = m_Allocator->Allocate<Type>(newCapacity);
 		if (newCapacity < m_Capacity)
 		{
-			std::memcpy(newData, m_Data, newCapacity * sizeof(Type));
+			memcpy(newData, m_Data, newCapacity * sizeof(Type));
 			m_Size = m_Size > newCapacity ? newCapacity : m_Size;
 		}
 		else
 		{
-			std::memcpy(newData, m_Data, m_Capacity * sizeof(Type));
+			memcpy(newData, m_Data, m_Capacity * sizeof(Type));
 		}
 
 		m_Allocator->Free(m_Data, m_Capacity * sizeof(Type));

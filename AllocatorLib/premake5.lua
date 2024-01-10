@@ -17,8 +17,6 @@ project "AllocatorLib"
         "src"
     }
 
-    filter "system:windows"
-
     filter "configurations:Debug"
 		runtime "Debug"
         symbols "on"
