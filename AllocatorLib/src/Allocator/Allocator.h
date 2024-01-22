@@ -99,11 +99,6 @@ namespace All {
 		void* FreedBlockAllocation(const size_t& size);
 		void* SimpleFreedBlockAllocation(const uint64_t& blockIndex, const size_t& size);
 		void TryMerge(uint64_t blockIndex);
-		void TryMergeFreeBlocks(const uint64_t& blockIndex);
-		void MergeBlocksUnchecked(const uint64_t& blockIndex, const size_t& count);
-
-		// TODO Remove this shit:
-		void PrintBlocks();
 	private:
 		char* m_Buffer;
 		List<Block>* m_FreedBlocks;
