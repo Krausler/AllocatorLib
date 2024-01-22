@@ -18,9 +18,9 @@ namespace All {
 		using Iterator = ListIterator<Type>;
 
 	public:
-		List(Allocator* allocator, const size_t& capacity = c_DefaultListSize, const size_t& size = 0, const float& increaseMultiplier = c_DefaultIncreaseMultiplier);
-		List(Allocator* allocator, const size_t& capacity);
-		List(Allocator* allocator, const uint32_t& size);
+		List(Allocator& allocator, const size_t& capacity = c_DefaultListSize, const size_t& size = 0, const float& increaseMultiplier = c_DefaultIncreaseMultiplier);
+		List(Allocator& allocator, const size_t& size);
+		List(Allocator& allocator, const uint32_t& capacity);
 		List(const List<Type>& other);
 		List(List<Type>&& other);
 		~List();
@@ -34,6 +34,8 @@ namespace All {
 		void Insert(const uint64_t index, Args&&... args);
 
 		void Remove(const uint64_t& index);
+		void Remove(const uint64_t& index, const size_t& count);
+		void Remove(const Iterator start, const Iterator end);
 
 		void SetCapacity(const size_t& newCapacity);
 		void IncreaseCapacity();

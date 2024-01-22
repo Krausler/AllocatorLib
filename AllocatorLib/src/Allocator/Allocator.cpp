@@ -6,11 +6,17 @@
 #include <array>
 
 namespace All {
+	const uint64_t c_InitialBlockListCapacity = 20;
+
 	Allocator::Allocator(const AllocatorSpecification& spec)
-		: m_Buffer((char*)::operator new(spec.Size)), m_Spec(spec), m_AllocData({ spec.Size, spec.Size, 0, 0 })
+		: m_Spec(spec)
 	{
 		ALL_ASSERT(spec.ResizeIncrease > 0.0f, "ResizeIncrease must be bigger then 0!");
 		ALL_ASSERT(spec.Size > 0, "Size must be bigger then 0!");
+
+		m_Buffer = (char*)::operator new(spec.Size);
+		m_AllocData = { spec.Size, spec.Size, 0, 0 };
+		m_FreedBlocks = AllocateInitialized<List<Block>>(*this);
 
 		ALL_LOG_FORMAT_INFO("Allocated 'Heap' of buffer size %zu.", m_AllocData.Capacity);
 	}
@@ -23,11 +29,9 @@ namespace All {
 	void* Allocator::Allocate(const size_t& size)
 	{
 		// Checking whether there is enough space for this allocation
-		if (m_AllocData.FreeSpace < size)
-			Resize();
+		ALL_ASSERT(m_AllocData.Capacity - m_AllocData.Pointer >= size);
 
 		// Handling allocations from freed blocks
-
 		void* p = FreedBlockAllocation(size);
 
 		if (!p)
@@ -44,11 +48,14 @@ namespace All {
 
 	void Allocator::Free(void* ptr, const size_t& size)
 	{
+		//PrintBlocks();
 		uint64_t offsetInBuffer = (char*)ptr - m_Buffer;
+		ALL_ASSERT(offsetInBuffer <= m_AllocData.Pointer);
 
 		if (offsetInBuffer < m_AllocData.Pointer)
 		{
-			m_FreedBlocks.push_back({ ptr, size });
+			m_FreedBlocks->Add({ ptr, size });
+			TryMerge(m_FreedBlocks->GetSize() - 1);
 		}
 		else
 		{
@@ -58,6 +65,7 @@ namespace All {
 		m_AllocData.AllocationCount--;
 		m_AllocData.FreeSpace += size;
 		ALL_LOG_FORMAT_INFO("Deallocated memory of size %zu.", size);
+		//PrintBlocks();
 	}
 
 	void Allocator::Resize()
@@ -77,41 +85,31 @@ namespace All {
 
 	void* Allocator::FreedBlockAllocation(const size_t& size)
 	{
-		if (m_FreedBlocks.size() == 0)
+		if (m_AllocData.AllocationCount < 2)
 			return nullptr;
 
-		for (uint32_t i = 0; i < m_FreedBlocks.size(); i++)
+		if (m_FreedBlocks->GetSize() == 0)
+			return nullptr;
+
+		for (uint32_t i = 0; i < m_FreedBlocks->GetSize(); i++)
 		{
 			void* result = SimpleFreedBlockAllocation(i, size);
 			if (result)
 				return result;
-
-			if (m_FreedBlocks.size() > 1 && i >= 1)
-			{
-				FreedBlock& block = m_FreedBlocks[i];
-				FreedBlock& previousBlock = m_FreedBlocks[i - 1];
-				if ((char*)previousBlock.Pointer + previousBlock.Size == block.Pointer && previousBlock.Size + block.Size >= size)
-				{
-					previousBlock.Pointer = previousBlock.Pointer;
-					previousBlock.Size = previousBlock.Size + block.Size;
-
-					m_FreedBlocks.erase(m_FreedBlocks.begin() + i);
-
-					return SimpleFreedBlockAllocation(i - 1, size);
-				}
-			}
 		}
 		return nullptr;
 	}
 
-	void* Allocator::SimpleFreedBlockAllocation(const uint32_t& blockIndex, const size_t& size)
+	void* Allocator::SimpleFreedBlockAllocation(const uint64_t& blockIndex, const size_t& size)
 	{
-		FreedBlock& block = m_FreedBlocks[blockIndex];
+		ALL_ASSERT(blockIndex < m_FreedBlocks->GetSize());
+
+		Block& block = m_FreedBlocks->operator[](blockIndex);
 		int32_t sizeDiffrence = block.Size - size;
 		if (sizeDiffrence == 0)
 		{
 			void* p = block.Pointer;
-			m_FreedBlocks.erase(m_FreedBlocks.begin() + blockIndex);
+			m_FreedBlocks->Remove(blockIndex);
 			return p;
 		}
 		else if (sizeDiffrence > 0)
@@ -122,5 +120,104 @@ namespace All {
 			return p;
 		}
 		return nullptr;
+	}
+
+	void Allocator::TryMerge(uint64_t blockIndex)
+	{
+		ALL_ASSERT(blockIndex < m_FreedBlocks->GetSize());
+		Block& block = m_FreedBlocks->operator[](blockIndex);
+
+		for (int i = 0; i < m_FreedBlocks->GetSize(); i++)
+		{
+			if (i == blockIndex)
+				continue;
+
+			Block& block2 = m_FreedBlocks->operator[](i);
+
+			if (((char*)block2.Pointer + block2.Size) == block.Pointer)
+			{
+				block.Pointer = block2.Pointer;
+				block.Size += block2.Size;
+				m_FreedBlocks->Remove(i);
+			}
+			else if (((char*)block.Pointer + block.Size) == block2.Pointer)
+			{
+				block.Size += block2.Size;
+				m_FreedBlocks->Remove(i);
+			}
+		}
+	}
+
+	void Allocator::TryMergeFreeBlocks(const uint64_t& blockIndex)
+	{
+		ALL_ASSERT(blockIndex < m_FreedBlocks->GetSize());
+
+		Block& block = m_FreedBlocks->operator[](blockIndex);
+		if (m_FreedBlocks->GetSize() > blockIndex + 1)
+		{
+			Block& nextBlock = m_FreedBlocks->operator[](blockIndex + 1);
+
+			if (blockIndex >= 1)
+			{
+				Block& previousBlock = m_FreedBlocks->operator[](blockIndex - 1);
+
+				if ((char*)previousBlock.Pointer + previousBlock.Size == block.Pointer && (char*)block.Pointer + block.Size == nextBlock.Pointer)
+				{
+					//previousBlock.Size += block.Size + nextBlock.Size;
+					//m_FreedBlocks->Remove(blockIndex);
+					//m_FreedBlocks->Remove(blockIndex + 1);
+					MergeBlocksUnchecked(blockIndex - 1, 3);
+				}
+				else if ((char*)previousBlock.Pointer + previousBlock.Size == block.Pointer)
+				{
+					MergeBlocksUnchecked(blockIndex - 1, 2);
+				}
+				else if ((char*)block.Pointer + block.Size == nextBlock.Pointer)
+				{
+					MergeBlocksUnchecked(blockIndex, 2);
+				}
+			}
+			else if ((char*)block.Pointer + block.Size == nextBlock.Pointer)
+			{
+				MergeBlocksUnchecked(blockIndex, 2);
+			}
+		}
+		else if (blockIndex >= 1)
+		{
+			Block& previousBlock = m_FreedBlocks->operator[](blockIndex - 1);
+
+			if ((char*)previousBlock.Pointer + previousBlock.Size == block.Pointer)
+			{
+				MergeBlocksUnchecked(blockIndex - 1, 2);
+			}
+		}
+	}
+
+	void Allocator::MergeBlocksUnchecked(const uint64_t& blockIndex, const size_t& count)
+	{
+		ALL_ASSERT(count > 1);
+
+		Block& block = m_FreedBlocks->operator[](blockIndex);
+		uint64_t newSize = 0;
+
+		for (int i = 0; i < count; i++)
+		{
+			newSize += m_FreedBlocks->operator[](blockIndex + i).Size;
+		}
+
+		m_FreedBlocks->Remove(blockIndex + 1, count - 1);
+		block.Size = newSize;
+	}
+
+	// TODO: Remove this stuff
+	void Allocator::PrintBlocks()
+	{
+		std::cout << "=========================================================" << std::endl;
+		for (int i = 0; i < m_FreedBlocks->GetSize(); i++)
+		{
+			Block& block = m_FreedBlocks->operator[](i);
+			std::cout << "Pointer: " << block.Pointer << ", Size: " << block.Size << std::endl;
+		}
+		std::cout << "=========================================================" << std::endl;
 	}
 }

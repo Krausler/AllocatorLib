@@ -1,24 +1,25 @@
 #include "Allocator/Core.h"
 
 #include "Allocator/Allocator.h"
+#include "List.h"
 
 namespace All {
 	template<typename Type>
-	inline List<Type>::List(Allocator* allocator, const size_t& capacity, const size_t& size, const float& increaseMultiplier)
-		: m_Allocator(allocator), m_Capacity(capacity), m_Size(size), m_IncreaseCapacityMultiplier(increaseMultiplier)
+	inline List<Type>::List(Allocator& allocator, const size_t& capacity, const size_t& size, const float& increaseMultiplier)
+		: m_Allocator(&allocator), m_Capacity(capacity), m_Size(size), m_IncreaseCapacityMultiplier(increaseMultiplier)
 	{
 		m_Data = m_Allocator->Allocate<Type>(m_Capacity);
 	}
 
 	template<typename Type>
-	List<Type>::List(Allocator* allocator, const size_t& capacity)
-		: List<Type>(allocator, capacity)
+	List<Type>::List(Allocator& allocator, const size_t& size)
+		: List<Type>(allocator, static_cast<size_t>(size), static_cast<size_t>(size))
 	{
 	}
 
 	template<typename Type>
-	List<Type>::List(Allocator* allocator, const uint32_t& size)
-		: List<Type>(allocator, static_cast<size_t>(size), static_cast<size_t>(size))
+	List<Type>::List(Allocator& allocator, const uint32_t& capacity)
+		: List<Type>(allocator, capacity)
 	{
 	}
 
@@ -64,9 +65,10 @@ namespace All {
 	template<typename Type>
 	inline void List<Type>::Add(Type&& element)
 	{
-		if (++m_Size > m_Capacity)
+		if (m_Size == m_Capacity)
 			IncreaseCapacity();
-		m_Data[m_Size - 1] = std::move(element);
+		m_Data[m_Size] = std::move(element);
+		m_Size++;
 	}
 
 	template<typename Type>
@@ -86,8 +88,27 @@ namespace All {
 	template<typename Type>
 	inline void List<Type>::Remove(const uint64_t& index)
 	{
+		//ALL_ASSERT(index < m_Size);
+		//memcpy(m_Data + index, m_Data + index + 1, (--m_Size - index) * sizeof(Type));
+		Remove(index, 1);
+	}
+
+	template<typename Type>
+	void List<Type>::Remove(const uint64_t& index, const size_t& count)
+	{
 		ALL_ASSERT(index < m_Size);
-		memcpy(m_Data + index, m_Data + index + 1, (--m_Size - index) * sizeof(Type));
+		ALL_ASSERT(count > 0);
+		memcpy(m_Data + index, m_Data + index + count, (m_Size - index + 1 - count) * sizeof(Type));
+		m_Size -= count;
+	}
+
+	template<typename Type>
+	void List<Type>::Remove(const Iterator start, const Iterator end)
+	{
+		uint64_t index = start - begin();
+		size_t count = end - start;
+
+		Remove(index, count);
 	}
 
 	template<typename Type>
@@ -104,16 +125,20 @@ namespace All {
 			memcpy(newData, m_Data, m_Capacity * sizeof(Type));
 		}
 
-		m_Allocator->Free(m_Data, m_Capacity * sizeof(Type));
+		Type* temp = m_Data;
+		uint64_t oldCapacity = m_Capacity;
 		m_Data = newData;
-		newData = nullptr;
 		m_Capacity = newCapacity;
+		m_Allocator->Free(temp, oldCapacity * sizeof(Type));
+		newData = nullptr;
+		temp = nullptr;
 	}
 
 	template<typename Type>
 	inline void List<Type>::IncreaseCapacity()
 	{
-		SetCapacity(m_Capacity * m_IncreaseCapacityMultiplier);
+		size_t newCapacity = m_Capacity * m_IncreaseCapacityMultiplier;
+		SetCapacity(newCapacity);
 	}
 
 	template<typename Type>

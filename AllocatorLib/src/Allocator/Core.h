@@ -1,6 +1,6 @@
 #pragma once
 
-#include "memory"
+#include <cstring>
 
 #define ALL_EXPAND_MACRO(x) x
 
