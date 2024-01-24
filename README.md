@@ -28,7 +28,7 @@ To get started clone this repository.
 
 ![Build-Dist](Resources/Build-And-Dist.png)
 
-4. There will be a static library generated in the `bin/Dist-windows-x86_64/AllocatorLib` folder.
+4. There will be a static library generated in the `bin/Dist-windows-Your-Computer-Architecture/AllocatorLib` folder.
 
 <ins>**Option 3 - Building ALL staticly using make:**</ins>
 
