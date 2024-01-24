@@ -1,6 +1,6 @@
 Allocator Library (ALL)
 =======================
-AllocatorLib is a simple allocator providing custom std types. These custom types can show an uplifts in performance of 100% compared to std types. 
+AllocatorLib is a simple allocator providing custom std types. These custom types can show uplifts in performance of up to 100% compared to std types.
 
 # Getting Started
 ALL uses premake as it's build system. To build ALL Windows is recommended, however building for linux is possible.
@@ -37,3 +37,15 @@ To get started clone this repository.
 ## Building ALL for Linux:
 
 1. Execute [Setup-Visual-Studio.bat](Scripts/Build-AllocatorLib.bat) located in the `Scripts folder`. This will generate a static library in `bin/Dist-linux-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc to be installed.
+
+# The Plan
+
+I mainly created this project because I wanted to see how custom allocators work and as I went through the process of creating this project I found myself having a lot of fun writing low level data types and allocators. The plan is to expand this project adding more data types and diffrent allocators.
+
+### Features to come
+
+- Custom Tpyes: HashMap, HashSet, String
+- ArenaAllocator
+- Allocator support for std types
+
+
