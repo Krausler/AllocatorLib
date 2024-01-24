@@ -1,9 +1,6 @@
 #include "Allocator.h"
 
-#include "Allocator/Core.h"
 #include "Allocator/Types/List.h"
-
-#include <array>
 
 namespace All {
 	const uint64_t c_InitialBlockListCapacity = 20;
@@ -48,7 +45,6 @@ namespace All {
 
 	void Allocator::Free(void* ptr, const size_t& size)
 	{
-		//PrintBlocks();
 		uint64_t offsetInBuffer = (char*)ptr - m_Buffer;
 		ALL_ASSERT(offsetInBuffer <= m_AllocData.Pointer);
 
@@ -65,7 +61,6 @@ namespace All {
 		m_AllocData.AllocationCount--;
 		m_AllocData.FreeSpace += size;
 		ALL_LOG_FORMAT_INFO("Deallocated memory of size %zu.", size);
-		//PrintBlocks();
 	}
 
 	void Allocator::Resize()

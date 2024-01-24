@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <cstdint>
 
 #define ALL_EXPAND_MACRO(x) x
 

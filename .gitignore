@@ -13,3 +13,5 @@ bin-int
 
 # Make
 Makefile
+Tester/Makefile
+AllocatorLib/Makefile

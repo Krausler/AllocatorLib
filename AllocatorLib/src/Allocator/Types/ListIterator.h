@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include "Allocator/Core.h"
 
 namespace All {
 	template<typename Type>

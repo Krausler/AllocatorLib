@@ -88,8 +88,6 @@ namespace All {
 	template<typename Type>
 	inline void List<Type>::Remove(const uint64_t& index)
 	{
-		//ALL_ASSERT(index < m_Size);
-		//memcpy(m_Data + index, m_Data + index + 1, (--m_Size - index) * sizeof(Type));
 		Remove(index, 1);
 	}
 

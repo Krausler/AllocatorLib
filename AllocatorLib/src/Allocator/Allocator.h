@@ -1,10 +1,6 @@
 #pragma once
 
-#include <stdint.h>
-#include <iostream>
-#include <functional>
-#include <string>
-#include <vector>
+#include "Allocator/Core.h"
 
 namespace All {
 	template<typename Type>

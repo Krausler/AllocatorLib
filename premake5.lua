@@ -11,7 +11,7 @@ workspace "AllocatorLib"
     
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "AllocatorLib"
+include "AllocatorLib" -- This line
 include "Tester"
 
 
