@@ -1,13 +1,13 @@
 Allocator Library (ALL)
 =======================
-AllocatorLib is an all purpose heap allocator with custom std types for Lists, HashMaps (not implemented) and Vectors (not implemented).
+AllocatorLib is a simple allocator providing custom std types. These custom types can show an uplifts in performance of 100% compared to std types. 
 
 # Getting Started
 ALL uses premake as it's build system. To build ALL Windows is recommended, however building for linux is possible.
 
 To get started clone this repository.
 
-__Building ALL for Windows:__
+## Building ALL for Windows:
 
 <ins>**Option 1 - Integrate ALL into an existing premake project:**</ins>
 
@@ -32,6 +32,6 @@ __Building ALL for Windows:__
 
 1. Execute [Setup-Visual-Studio.bat](Scripts/Build-AllocatorLib.bat) located in the `Scripts folder`. This will generate a static library in `bin/Dist-windows-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc to be installed.
 
-__Building ALL for Linux:__
+## Building ALL for Linux:
 
 1. Execute [Setup-Visual-Studio.bat](Scripts/Build-AllocatorLib.bat) located in the `Scripts folder`. This will generate a static library in `bin/Dist-linux-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc to be installed.
