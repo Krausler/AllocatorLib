@@ -32,17 +32,18 @@ To get started clone this repository.
 
 <ins>**Option 3 - Building ALL staticly using make:**</ins>
 
-1. Execute [Setup-Visual-Studio.bat](Scripts/Build-AllocatorLib.bat) located in the `Scripts folder`. This will generate a static library in `bin/Dist-windows-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc to be installed.
+1. Execute [Build-AllocatorLib.bat](Scripts/Build-AllocatorLib.bat) located in the `Scripts folder`. This will generate a static library in `bin/Dist-windows-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc.
 
 ## Building ALL for Linux:
 
-1. Execute [Setup-Visual-Studio.bat](Scripts/Build-AllocatorLib.bat) located in the `Scripts folder`. This will generate a static library in `bin/Dist-linux-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc to be installed.
+1. Execute [Build-AllocatorLib.sh](Scripts/Build-AllocatorLib.sh) located in the `Scripts folder`. This will generate a static library in `bin/Dist-linux-Your-Computer-Architecture/AllocatorLib`. Note: Building ALL this way requires make and gcc.
 
 # The Plan
 
-I mainly created this project because I wanted to see how custom allocators work and as I went through the process of creating this project I found myself having a lot of fun writing low level data types and allocators. The plan is to expand this project adding more data types and diffrent allocators.
+I mainly created this project because I wanted to see how custom allocators work. As I went through the process of creating this project I found myself having a lot of fun writing low level data types and allocators. The plan is to expand this project adding more data types and diffrent allocators.
 
 ### Features to come
+I hope this list will expand.
 
 - Custom Tpyes: HashMap, HashSet, String
 - ArenaAllocator
