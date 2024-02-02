@@ -45,7 +45,7 @@ I mainly created this project because I wanted to see how custom allocators work
 ### Features to come
 I hope this list will expand.
 
-- Custom Tpyes: HashMap, HashSet, String
+- Custom Tpyes: LinkedList, HashMap, HashSet, String
 - ArenaAllocator
 - Allocator support for std types
 
