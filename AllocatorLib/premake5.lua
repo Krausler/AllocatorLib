@@ -1,34 +1,34 @@
+include "Config.lua"
+
 project "AllocatorLib"
-    kind "StaticLib"
+    kind "None"
     language "C++"
     cppdialect "C++20"
 
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
-
     files
     {
-        "src/Allocator/*.cpp",
-        "src/Allocator/**.h"    
+        "src/Allocator/**.h",
+        "src/Allocator/**.cpp"
     }
 
-    includedirs
-    {
-        "src"
-    }
+
+    if(BuildStaticLib == true) then
+        kind "StaticLib"
+        defines { "ALL_BUILD_STATIC_LIB" }
+    end
 
     filter "configurations:Debug"
 		runtime "Debug"
-        symbols "on"
-        defines "ALL_DEBUG"
+		symbols "on"
+		defines "ALL_DEBUG"
 
     filter "configurations:Release"
 		runtime "Release"
 		optimize "Speed"
-        defines "ALL_RELEASE"
+		defines "ALL_RELEASE"
 
     filter "configurations:Dist"
 		runtime "Release"
-		optimize "Speed"
 		symbols "off"
-        defines "ALL_RELEASE"
+		optimize "Speed"
+		defines "ALL_DIST"

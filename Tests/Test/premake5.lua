@@ -4,7 +4,7 @@ project "Tester"
     cppdialect "C++20"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	 objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	  objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
     files
     {
@@ -14,19 +14,13 @@ project "Tester"
 
     includedirs
     {
-        "%{wks.location}/AllocatorLib/src"
-    }
-
-    links
-    {
+        "%{wks.location}/AllocatorLib/src",
         "AllocatorLib"
     }
-
-    filter "system:windows"
-
     filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
+        defines "ALL_ENABLE_ASSERT"
 
     filter "configurations:Release"
 		runtime "Release"

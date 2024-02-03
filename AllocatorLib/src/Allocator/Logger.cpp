@@ -3,7 +3,9 @@
 #include <cstdarg>
 
 namespace All {
-	std::string LogLevelToString(LogLevel level)
+	Logger::LoggingFunc Logger::m_Callback;
+
+	inline std::string LogLevelToString(LogLevel level)
 	{
 		switch (level)
 		{
@@ -18,9 +20,7 @@ namespace All {
 		}
 	}
 
-	Logger::LoggingFunc Logger::m_Callback;
-
-	void Logger::Log(LogLevel level, const std::string& msg)
+	inline void Logger::Log(LogLevel level, const std::string& msg)
 	{
 		if (!m_Callback)
 			return;
@@ -28,18 +28,26 @@ namespace All {
 		m_Callback(level, msg);
 	}
 
-	void Logger::LogInfo(const std::string& msg)
+	inline void Logger::LogInfo(const std::string& msg)
 	{
 		Log(LogLevel::Info, msg);
 	}
 
-	void Logger::LogWarning(const std::string& msg)
+	inline void Logger::LogWarning(const std::string& msg)
 	{
 		Log(LogLevel::Warning, msg);
 	}
 
-	void Logger::LogError(const std::string& msg)
+	inline void Logger::LogError(const std::string& msg)
 	{
 		Log(LogLevel::Error, msg);
+	}
+
+	template<typename ...Args>
+	inline std::string Logger::Format(const std::string& msg, Args&&... args)
+	{
+		char* buffer = new char[250];
+		std::sprintf(buffer, msg.data(), std::forward<Args>(args)...);
+		return buffer;
 	}
 }

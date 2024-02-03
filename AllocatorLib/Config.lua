@@ -1,0 +1,1 @@
+BuildStaticLib = false

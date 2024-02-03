@@ -1,11 +1,9 @@
 #include "Allocator.h"
 
-#include "Allocator/Types/List.h"
+#include "Types/ArrayList.h"
 
 namespace All {
-	const uint64_t c_InitialBlockListCapacity = 20;
-
-	Allocator::Allocator(const AllocatorSpecification& spec)
+	inline Allocator::Allocator(const AllocatorSpecification& spec)
 		: m_Spec(spec)
 	{
 		ALL_ASSERT(spec.ResizeIncrease > 0.0f, "ResizeIncrease must be bigger then 0!");
@@ -13,17 +11,17 @@ namespace All {
 
 		m_Buffer = (char*)::operator new(spec.Size);
 		m_AllocData = { spec.Size, spec.Size, 0, 0 };
-		m_FreedBlocks = AllocateInitialized<List<Block>>(*this);
+		m_FreedBlocks = AllocateInitialized<ArrayList<Block>>(*this);
 
 		ALL_LOG_FORMAT_INFO("Allocated 'Heap' of buffer size %zu.", m_AllocData.Capacity);
 	}
 
-	Allocator::~Allocator()
+	inline Allocator::~Allocator()
 	{
 		::operator delete(m_Buffer);
 	}
 
-	void* Allocator::Allocate(const size_t& size)
+	inline void* Allocator::Allocate(const size_t& size)
 	{
 		// Checking whether there is enough space for this allocation
 		ALL_ASSERT(m_AllocData.Capacity - m_AllocData.Pointer >= size);
@@ -36,6 +34,7 @@ namespace All {
 			p = m_Buffer + m_AllocData.Pointer;
 			m_AllocData.Pointer += size;
 		}
+
 		m_AllocData.FreeSpace -= size;
 		m_AllocData.AllocationCount++;
 		ALL_LOG_FORMAT_INFO("Allocated memory of size %zu.", size);
@@ -43,12 +42,12 @@ namespace All {
 		return p;
 	}
 
-	void Allocator::Free(void* ptr, const size_t& size)
+	inline void Allocator::Free(void* ptr, const size_t& size)
 	{
-		uint64_t offsetInBuffer = (char*)ptr - m_Buffer;
-		ALL_ASSERT(offsetInBuffer <= m_AllocData.Pointer);
+		int64_t offsetInBuffer = (char*)ptr - m_Buffer;
+		ALL_ASSERT(offsetInBuffer <= m_AllocData.Pointer && offsetInBuffer >= 0);
 
-		if (offsetInBuffer < m_AllocData.Pointer)
+		if (offsetInBuffer + size < m_AllocData.Pointer)
 		{
 			m_FreedBlocks->Add({ ptr, size });
 			TryMerge(m_FreedBlocks->GetSize() - 1);
@@ -63,7 +62,7 @@ namespace All {
 		ALL_LOG_FORMAT_INFO("Deallocated memory of size %zu.", size);
 	}
 
-	void Allocator::Resize()
+	inline void Allocator::Resize()
 	{
 		size_t newCapacity = m_AllocData.Capacity * m_Spec.ResizeIncrease;
 		char* newBuffer = new char[newCapacity];
@@ -78,7 +77,7 @@ namespace All {
 		m_AllocData.Capacity = newCapacity;
 	}
 
-	void* Allocator::FreedBlockAllocation(const size_t& size)
+	inline void* Allocator::FreedBlockAllocation(const size_t& size)
 	{
 		if (m_AllocData.AllocationCount < 2)
 			return nullptr;
@@ -95,7 +94,7 @@ namespace All {
 		return nullptr;
 	}
 
-	void* Allocator::SimpleFreedBlockAllocation(const uint64_t& blockIndex, const size_t& size)
+	inline void* Allocator::SimpleFreedBlockAllocation(const uint64_t& blockIndex, const size_t& size)
 	{
 		ALL_ASSERT(blockIndex < m_FreedBlocks->GetSize());
 
@@ -117,7 +116,7 @@ namespace All {
 		return nullptr;
 	}
 
-	void Allocator::TryMerge(uint64_t blockIndex)
+	inline void Allocator::TryMerge(uint64_t blockIndex)
 	{
 		ALL_ASSERT(blockIndex < m_FreedBlocks->GetSize());
 		Block& block = m_FreedBlocks->operator[](blockIndex);

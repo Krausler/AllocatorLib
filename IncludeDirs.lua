@@ -1,4 +1,4 @@
 ALLIncludeDir = {}
 
-ALLIncludeDir["Allocator"] = "AllocatorLib/Allocator"
-ALLIncludeDir["Types"] = "%{ALLIncludeDir.Src}/Types"
+ALLIncludeDir["Allocator"] = "AllocatorLib/src/Allocator"
+ALLIncludeDir["Types"] = "%{ALLIncludeDir.Allocator}/Types"

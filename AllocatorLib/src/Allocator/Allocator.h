@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Allocator/Core.h"
+#include "Core.h"
 
 namespace All {
 	template<typename Type>
-	class List;
+	class ArrayList;
 
 	const uint32_t FREEDBLOCK_LIST_SIZE = 1024;
 
@@ -82,6 +82,7 @@ namespace All {
 		template<typename T>
 		void Free(T* ptr)
 		{
+			ptr->~T();
 			Free(ptr, sizeof(T));
 		}
 
@@ -97,9 +98,13 @@ namespace All {
 		void TryMerge(uint64_t blockIndex);
 	private:
 		char* m_Buffer;
-		List<Block>* m_FreedBlocks;
+		ArrayList<Block>* m_FreedBlocks;
 
 		AllocationData m_AllocData;
 		AllocatorSpecification m_Spec;
 	};
 }
+
+#ifdef ALL_IMPLEMENTATION
+#include "Allocator.cpp"
+#endif

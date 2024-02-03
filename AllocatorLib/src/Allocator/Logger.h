@@ -1,8 +1,9 @@
 #pragma once
 
-#include <functional>
+#include "Core.h"
+
 #include <string>
-#include <stdio.h>
+#include <functional>
 
 namespace All {
 	enum class LogLevel
@@ -28,17 +29,15 @@ namespace All {
 		static void SetLoggingFunc(const LoggingFunc& func) { m_Callback = func; }
 
 		template<typename... Args>
-		static std::string Format(const std::string& msg, Args&&... args)
-		{
-			char* buffer = new char[250];
-			std::sprintf(buffer, msg.data(), std::forward<Args>(args)...);
-			return buffer;
-		}
+		static std::string Format(const std::string& msg, Args&&... args);
 
 	private:
 		static LoggingFunc m_Callback;
 	};
 }
+#ifdef ALL_IMPLEMENTATION
+#include "Logger.cpp"
+#endif
 
 #define ALL_BIND_LOGGING_FUNC(func) std::bind(func, std::placeholders::_1, std::placeholders::_2)
 

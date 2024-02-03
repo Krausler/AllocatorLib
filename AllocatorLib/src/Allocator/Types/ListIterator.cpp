@@ -1,6 +1,8 @@
+#include "ListIterator.h"
+
 namespace All {
 	template<typename Type>
-	inline ListIterator<Type>::ListIterator(Pointer ptr)
+	ListIterator<Type>::ListIterator(Pointer ptr)
 		: m_Ptr(ptr)
 	{
 	}
@@ -8,12 +10,14 @@ namespace All {
 	template<typename Type>
 	ListIterator<Type>::Reference ListIterator<Type>::operator*()
 	{
-		return *m_Ptr;
+		ALL_ASSERT(m_Ptr);
+		return m_Ptr->Element;
 	}
 
 	template<typename Type>
 	ListIterator<Type>::Pointer ListIterator<Type>::operator->()
 	{
+		ALL_ASSERT(m_Ptr);
 		return m_Ptr;
 	}
 
@@ -30,12 +34,14 @@ namespace All {
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator++()
 	{
+		ALL_ASSERT(m_Ptr);
 		m_Ptr++;
 		return *this;
 	}
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator++(int)
 	{
+		ALL_ASSERT(m_Ptr);
 		ListIterator temp = *this;
 		m_Ptr++;
 		return temp;
@@ -44,6 +50,7 @@ namespace All {
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator--()
 	{
+		ALL_ASSERT(m_Ptr);
 		m_Ptr--;
 		return *this;
 	}
@@ -51,6 +58,7 @@ namespace All {
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator--(int)
 	{
+		ALL_ASSERT(m_Ptr);
 		ListIterator temp = *this;
 		m_Ptr--;
 		return temp;
@@ -58,18 +66,21 @@ namespace All {
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator+=(const uint32_t value)
 	{
+		ALL_ASSERT(m_Ptr);
 		m_Ptr += value;
 		return *this;
 	}
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator-=(const uint32_t value)
 	{
+		ALL_ASSERT(m_Ptr);
 		m_Ptr -= value;
 		return *this;
 	}
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator+(const uint32_t value) const
 	{
+		ALL_ASSERT(m_Ptr);
 		ListIterator temp = *this;
 		temp += value;
 		return temp;
@@ -77,6 +88,7 @@ namespace All {
 	template<typename Type>
 	inline ListIterator<Type>& ListIterator<Type>::operator-(const uint32_t value) const
 	{
+		ALL_ASSERT(m_Ptr);
 		ListIterator temp = *this;
 		temp -= value;
 		return temp;
@@ -84,6 +96,7 @@ namespace All {
 	template<typename Type>
 	inline ListIterator<Type>::Reference ListIterator<Type>::operator[](const uint32_t index)
 	{
+		ALL_ASSERT(m_Ptr);
 		return m_Ptr[index];
 	}
 }
