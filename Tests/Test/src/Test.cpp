@@ -2,9 +2,9 @@
 #include <iostream>
 
 #define ALL_NO_LOGGING
-#include "Allocator/Allocator.h"
-#include "Allocator/Types/ArrayList.h"
-#include "Allocator/Types/LinkedList.h"
+#include "All/All.h"
+#include "All/Types/ArrayList.h"
+#include "All/Types/LinkedList.h"
 
 #include "StopWatch.h"
 

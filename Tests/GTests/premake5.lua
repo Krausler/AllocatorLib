@@ -16,7 +16,8 @@ project "GTests"
 
     includedirs
     {
-        "../Vendor/googletest/googletest/include"
+        "../Vendor/googletest/googletest/include",
+        ALLIncludeDir
     }
 
     links

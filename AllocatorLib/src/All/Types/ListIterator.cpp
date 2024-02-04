@@ -11,7 +11,7 @@ namespace All {
 	ListIterator<Type>::Reference ListIterator<Type>::operator*()
 	{
 		ALL_ASSERT(m_Ptr);
-		return m_Ptr->Element;
+		return *m_Ptr;
 	}
 
 	template<typename Type>

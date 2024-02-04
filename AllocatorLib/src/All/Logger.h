@@ -41,7 +41,7 @@ namespace All {
 
 #define ALL_BIND_LOGGING_FUNC(func) std::bind(func, std::placeholders::_1, std::placeholders::_2)
 
-#ifndef ALL_NO_LOGGING
+#ifdef ALL_ENABLE_LOGGING
 #define ALL_FORMAT(...) Logger::Format(__VA_ARGS__)
 
 #define ALL_LOG_INFO(msg) Logger::LogInfo(msg)
