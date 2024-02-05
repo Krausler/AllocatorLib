@@ -12,7 +12,7 @@ namespace All {
 
 	template<typename Type>
 	inline ArrayList<Type>::ArrayList(Allocator& allocator, const size_t& size)
-		: m_Capacity(size), m_Size(size), m_IncreaseCapacityMultiplier(c_DefaultIncreaseMultiplier)
+		: m_Allocator(&allocator), m_Capacity(size), m_Size(size), m_IncreaseCapacityMultiplier(c_DefaultIncreaseMultiplier)
 	{
 		m_Data = m_Allocator->Allocate<Type>(m_Capacity);
 	}

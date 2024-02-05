@@ -50,7 +50,7 @@ namespace All {
 
 #define ALL_LOG_FORMAT_INFO(...) ALL_LOG_INFO(ALL_FORMAT(__VA_ARGS__))
 
-#define ALL_LOG_FORMAT_WARN(...)  ALL_LOG_WARN(ALL_FORMAT(__VA_ARGS__))
+#define ALL_LOG_FORMAT_WARN(...) ALL_LOG_WARN(ALL_FORMAT(__VA_ARGS__))
 
 #define ALL_LOG_FORMAT_ERROR(...) ALL_LOG_ERROR(ALL_FORMAT(__VA_ARGS__))
 
@@ -61,7 +61,7 @@ namespace All {
 #define ALL_LOG_WARN(msg)
 #define ALL_LOG_ERROR(msg)
 
-#define ALL_LOG_FORMAT_INFO(msg)
-#define ALL_LOG_FORMAT_WARN(msg)
-#define ALL_LOG_FORMAT_ERROR(msg)
+#define ALL_LOG_FORMAT_INFO(...)
+#define ALL_LOG_FORMAT_WARN(...)
+#define ALL_LOG_FORMAT_ERROR(...)
 #endif

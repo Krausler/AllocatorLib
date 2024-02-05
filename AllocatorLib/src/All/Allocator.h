@@ -17,7 +17,7 @@ namespace All {
 		static AllocatorSpecification Default()
 		{
 			AllocatorSpecification spec = {};
-			spec.Size = 1024 * 1024 * 5;
+			spec.Size = 1024 * 1024 * 10;
 			spec.FreedMemArraySize = 30;
 			spec.ResizeIncrease = 1.5f;
 

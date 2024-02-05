@@ -17,7 +17,7 @@ project "Tester"
         ALLIncludeDir
     }
 
-    links "AllocatorLib"
+    --links "AllocatorLib"
 
     filter "configurations:Debug"
 		runtime "Debug"

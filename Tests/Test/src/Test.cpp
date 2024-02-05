@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 
-#define ALL_NO_LOGGING
+#define ALL_ENABLE_LOGGING
 #include "All/All.h"
 #include "All/Types/ArrayList.h"
 #include "All/Types/LinkedList.h"

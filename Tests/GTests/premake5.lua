@@ -22,8 +22,7 @@ project "GTests"
 
     links
     {
-        "GoogleTest",
-        "AllocatorLib"
+        "GoogleTest"
     }
     
     filter "configurations:Debug"
