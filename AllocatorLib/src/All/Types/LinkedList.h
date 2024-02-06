@@ -35,17 +35,19 @@ namespace All {
 
 		TNode* FindNode(const uint64_t& index);
 
-		Reference operator[](const uint64_t& index);
-		ConstRef operator[](const uint64_t& index) const;
-		void operator=(const LinkedList<Type>& other);
-		void operator=(LinkedList<Type>&& other);
-		bool operator==(const LinkedList<Type>& other);
-		bool operator!=(const LinkedList<Type>& other);
+		const size_t& GetSize() const { return m_Size; }
 
 		Iterator begin() const { return Iterator(m_First); }
 		Iterator end() const { return Iterator(m_Last); }
 		const Iterator cbegin() const { return begin(); }
 		const Iterator cend() const { return end(); }
+
+		Reference operator[](const uint64_t& index);
+		ConstRef operator[](const uint64_t& index) const;
+		void operator=(const LinkedList<Type>& other);
+		void operator=(LinkedList<Type>&& other);
+		bool operator==(const LinkedList<Type>& other) const;
+		bool operator!=(const LinkedList<Type>& other) const;
 
 	private:
 		TNode* CreateNode(Type&& element, TNode* prev, TNode* next);

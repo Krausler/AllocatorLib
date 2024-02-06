@@ -1,64 +1,118 @@
-#include "HashMap.h"
 namespace All {
+	// Map
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline Map<Key, Value, HashMapStoreValueType>::Map(Allocator& allocator, const size_t& capacity)
+		: m_Allocator(allocator), m_Capacity(capacity), m_Values(m_Allocator, m_Capacity)
+	{
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline Map<Key, Value, HashMapStoreValueType>::Map(const Map& other)
+		: m_Allocator(other.m_Allocator), m_Capacity(other.m_Capacity), m_Values(other.m_Values)
+	{
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline Map<Key, Value, HashMapStoreValueType>::Map(Map&& other)
+		: m_Allocator(other.m_Allocator), m_Capacity(other.m_Capacity), m_Values(other.m_Values)
+	{
+		m_Capacity = 0;
+		m_Values = nullptr;
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline void Map<Key, Value, HashMapStoreValueType>::SetCapacity(const size_t& newSize)
+	{
+		m_Values.Resize(newSize);
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline void Map<Key, Value, HashMapStoreValueType>::IncreaseCapacity()
+	{
+		SetCapacity(m_Values.GetSize() * c_HashMapIncreaseMultiplier);
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline void Map<Key, Value, HashMapStoreValueType>::operator=(const Map& other)
+	{
+		m_Allocator = other.m_Allocator;
+		m_Capacity = other.m_Capacity;
+		m_Values = other.m_Values;
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline void Map<Key, Value, HashMapStoreValueType>::operator=(Map&& other)
+	{
+		m_Allocator = other.m_Allocator;
+		m_Capacity = other.m_Capacity;
+		m_Values = other.m_Values;
+
+		other.m_Capacity = 0;
+		other.m_Values = nullptr;
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline bool Map<Key, Value, HashMapStoreValueType>::operator==(const Map& other) const
+	{
+		return m_Allocator == other.m_Allocator && m_Capacity == other.m_Capacity && m_Values == other.m_Values;
+	}
+
+	template<typename Key, typename Value, typename HashMapStoreValueType>
+	inline bool Map<Key, Value, HashMapStoreValueType>::operator!=(const Map& other) const
+	{
+		return !(*this == other);
+	}
+
+	// HashMap
+
 	template<typename Key, typename Value, typename Hash>
 	inline HashMap<Key, Value, Hash>::HashMap(Allocator& allocator, const size_t& capacity)
-		: m_Allocator(&allocator), m_Values(allocator, capacity), m_Size(0)
-	{
-	}
-	template<typename Key, typename Value, typename Hash>
-	inline HashMap<Key, Value, Hash>::HashMap(const HashMap<Key, Value, Hash>& other)
-		: m_Values(other.m_Values), m_Allocator(other.m_Allocator), m_Size(other.m_Size)
+		: Map<Key, Value, LinkedList<Pair<Key, Value>>>(allocator, capacity)
 	{
 	}
 
 	template<typename Key, typename Value, typename Hash>
-	inline HashMap<Key, Value, Hash>::HashMap(HashMap<Key, Value, Hash>&& other)
-		: m_Values(other.m_Values), m_Allocator(other.m_Allocator), m_Size(other.m_Size)
-	{
-		m_Size = 0;
-	}
-
-	template<typename Key, typename Value, typename hash>
-	inline void HashMap<Key, Value, hash>::Put(const Key& key, Value&& type)
-	{
-		uint64_t hash = Hash()();
-		uint64_t index = hash / m_Values.GetCapacity();
-
-		auto t = m_Values[index];
-	}
-
-	template<typename Key, typename Value, typename hash>
-	template<typename ...Args>
-	inline void HashMap<Key, Value, hash>::Emplace(const Key& key, Args && ...args)
+	inline HashMap<Key, Value, Hash>::HashMap(const HashMap& other)
+		: Map<Key, Value, LinkedList<Pair<Key, Value>>>(other)
 	{
 	}
 
 	template<typename Key, typename Value, typename Hash>
-	HashMap<Key, Value, Hash>::Reference HashMap<Key, Value, Hash>::operator[](const uint64_t& index)
+	inline HashMap<Key, Value, Hash>::HashMap(HashMap&& other)
+		: Map<Key, Value, LinkedList<Pair<Key, Value>>>(other)
 	{
-		return Reference();
 	}
+
 	template<typename Key, typename Value, typename Hash>
-	HashMap<Key, Value, Hash>::ConstRef HashMap<Key, Value, Hash>::operator[](const uint64_t& index) const
+	void HashMap<Key, Value, Hash>::Put(const Key& key, Value&& type)
 	{
-		return ConstRef();
+		uint32_t index = GetIndex(key);
+
+		ALL_ASSERT(!m_Values[index], "What the hack");
 	}
+
 	template<typename Key, typename Value, typename Hash>
-	void HashMap<Key, Value, Hash>::operator=(HashMap<Key, Value, Hash>&& other)
+	template<typename... Args>
+	void HashMap<Key, Value, Hash>::Emplace(const Key& key, Args&&... args)
 	{
 	}
+
 	template<typename Key, typename Value, typename Hash>
-	void HashMap<Key, Value, Hash>::operator=(const HashMap<Key, Value, Hash>& other)
+	void HashMap<Key, Value, Hash>::Remove(const Key& key)
 	{
 	}
+
 	template<typename Key, typename Value, typename Hash>
-	bool HashMap<Key, Value, Hash>::operator==(const HashMap<Key, Value, Hash>& other)
+	uint64_t HashMap<Key, Value, Hash>::GetIndex(const Key& key)
 	{
-		return false;
+		size_t hash = Hash()(key);
+		return hash % this->m_Capacity;
 	}
-	template<typename Key, typename Value, typename Hash>
-	bool HashMap<Key, Value, Hash>::operator!=(const HashMap<Key, Value, Hash>& other)
+
+	/*template<typename Key, typename Value, typename Hash>
+	Map<Key, Value, LinkedList<Pair<Key, Value>>>::Reference HashMap<Key, Value, Hash>::operator[](const Key& key)
 	{
-		return false;
-	}
+		return this->m_Values[0][0].first;
+	}*/
 }

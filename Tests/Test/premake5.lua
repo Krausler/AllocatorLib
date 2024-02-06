@@ -17,16 +17,9 @@ project "Tester"
         ALLIncludeDir
     }
 
-    --links "AllocatorLib"
-
     filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
-        defines
-        {
-            "ALL_ENABLE_ASSERT",
-            "ALL_ENABLE_LOGGING"
-        }
 
     filter "configurations:Release"
 		runtime "Release"

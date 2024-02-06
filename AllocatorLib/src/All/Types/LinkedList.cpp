@@ -206,13 +206,13 @@ namespace All {
 	}
 
 	template<typename Type>
-	inline bool LinkedList<Type>::operator==(const LinkedList<Type>& other)
+	inline bool LinkedList<Type>::operator==(const LinkedList<Type>& other) const
 	{
 		return m_Allocator == other.m_Allocator && m_First == other.m_First && m_Last == other.m_Last && m_Size == other.m_Size;
 	}
 
 	template<typename Type>
-	inline bool LinkedList<Type>::operator!=(const LinkedList<Type>& other)
+	inline bool LinkedList<Type>::operator!=(const LinkedList<Type>& other) const
 	{
 		return !(*this == other);
 	}

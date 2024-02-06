@@ -1,18 +1,16 @@
-#include "ArrayList.h"
-
 #include <cmath>
 
 namespace All {
 	template<typename Type>
 	inline ArrayList<Type>::ArrayList(Allocator& allocator)
-		: m_Allocator(&allocator), m_Capacity(c_DefaultListCapacity), m_Size(0), m_IncreaseCapacityMultiplier(c_DefaultIncreaseMultiplier)
+		: m_Allocator(&allocator), m_Capacity(c_DefaultListCapacity), m_Size(0), m_IncreaseCapacityMultiplier(c_ListIncreaseMultiplier)
 	{
 		m_Data = m_Allocator->Allocate<Type>(m_Capacity);
 	}
 
 	template<typename Type>
 	inline ArrayList<Type>::ArrayList(Allocator& allocator, const size_t& size)
-		: m_Allocator(&allocator), m_Capacity(size), m_Size(size), m_IncreaseCapacityMultiplier(c_DefaultIncreaseMultiplier)
+		: m_Allocator(&allocator), m_Capacity(size), m_Size(size), m_IncreaseCapacityMultiplier(c_ListIncreaseMultiplier)
 	{
 		m_Data = m_Allocator->Allocate<Type>(m_Capacity);
 	}
@@ -144,7 +142,7 @@ namespace All {
 	template<typename Type>
 	inline ArrayList<Type>::ConstRef ArrayList<Type>::operator[](const uint64_t& index) const
 	{
-		return ArrayList<Type>::operator[](index);
+		return ArrayList::operator[](index);
 	}
 
 	template<typename Type>
@@ -172,13 +170,13 @@ namespace All {
 	}
 
 	template<typename Type>
-	bool ArrayList<Type>::operator==(const ArrayList<Type>& other)
+	bool ArrayList<Type>::operator==(const ArrayList<Type>& other) const
 	{
 		return m_Data == other.m_Data && m_Size == other.m_Size && m_Capacity == other.m_Capacity && m_Allocator == other.m_Allocator && m_IncreaseCapacityMultiplier = other.m_IncreaseCapacityMultiplier;
 	}
 
 	template<typename Type>
-	bool ArrayList<Type>::operator!=(const ArrayList<Type>& other)
+	bool ArrayList<Type>::operator!=(const ArrayList<Type>& other) const
 	{
 		return !(*this == other);
 	}

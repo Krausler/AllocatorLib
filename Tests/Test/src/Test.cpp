@@ -1,14 +1,13 @@
 #include <vector>
 #include <iostream>
+#include <unordered_map>
 
-#define ALL_ENABLE_LOGGING
 #include "All/All.h"
-#include "All/Types/ArrayList.h"
-#include "All/Types/LinkedList.h"
+#include "ArrayList.h"
+#include "LinkedList.h"
+#include "HashMap.h"
 
 #include "StopWatch.h"
-
-#include <list>
 
 void AllocatorLogFunction(All::LogLevel level, const std::string& msg)
 {
@@ -21,7 +20,5 @@ int main()
 	Logger::SetLoggingFunc(AllocatorLogFunction);
 	Allocator allocator;
 
-	ArrayList<uint32_t> list(allocator);
-	list.Add(5);
-	list.Remove(0);
+	HashMap<uint32_t, double> map(allocator);
 }

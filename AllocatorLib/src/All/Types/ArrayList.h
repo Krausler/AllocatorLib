@@ -7,7 +7,7 @@
 
 namespace All {
 	const size_t c_DefaultListCapacity = 10;
-	const float c_DefaultIncreaseMultiplier = 1.5f;
+	const float c_ListIncreaseMultiplier = 1.5f;
 
 	template<typename Type>
 	class ArrayList
@@ -42,6 +42,11 @@ namespace All {
 		void IncreaseCapacity();
 		void Resize(const size_t& newSize);
 
+		const size_t& GetSize() const { return m_Size; }
+		const size_t& GetCapacity() const { return m_Capacity; }
+		const void* GetData() const { return (void*)m_Data; }
+		void* GetData() { return (void*)m_Data; }
+
 		Iterator begin() const { return Iterator(m_Data); }
 		Iterator end() const { return Iterator(m_Data + m_Size); }
 		const Iterator cbegin() const { return begin(); }
@@ -51,13 +56,8 @@ namespace All {
 		ConstRef operator[](const uint64_t& index) const;
 		void operator=(const ArrayList<Type>& other);
 		void operator=(ArrayList<Type>&& other);
-		bool operator==(const ArrayList<Type>& other);
-		bool operator!=(const ArrayList<Type>& other);
-
-		const size_t& GetSize() const { return m_Size; }
-		const size_t& GetCapacity() const { return m_Capacity; }
-		const void* GetData() const { return (void*)m_Data; }
-		void* GetData() { return (void*)m_Data; }
+		bool operator==(const ArrayList<Type>& other) const;
+		bool operator!=(const ArrayList<Type>& other) const;
 
 	private:
 		Pointer m_Data;
